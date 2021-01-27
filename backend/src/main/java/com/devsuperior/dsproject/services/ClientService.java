@@ -1,10 +1,13 @@
 package com.devsuperior.dsproject.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.devsuperior.dsproject.dto.ClientDTO;
 import com.devsuperior.dsproject.entities.Client;
 import com.devsuperior.dsproject.repositories.ClientRepository;
 
@@ -14,7 +17,15 @@ public class ClientService {
 	@Autowired
 	private ClientRepository repository;
 	
-	public List<Client> findAll(){
-		return repository.findAll();
+	@Transactional(readOnly = true)
+	public List<ClientDTO> findAll(){
+		List<Client> list = repository.findAll();
+		
+		List<ClientDTO> listDTO = new ArrayList<>();
+		for (Client cat : list) {
+			listDTO.add(new ClientDTO(cat));
+		}
+
+		return listDTO;
 	}
 }
