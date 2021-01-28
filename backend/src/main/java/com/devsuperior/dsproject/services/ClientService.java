@@ -36,6 +36,7 @@ public class ClientService {
 		return new ClientDTO(entity);
 	}
 
+	@Transactional
 	public ClientDTO insert(ClientDTO dto) {
 		Client entity = new Client();
 		entity.setName(dto.getName());
@@ -62,6 +63,7 @@ public class ClientService {
 		}
 	}
 
+	@Transactional
 	public ClientDTO update(Long id, ClientDTO dto) {
 		try {
 			Client entity = repository.getOne(id);
