@@ -1,12 +1,12 @@
 package com.devsuperior.dsproject.services;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,15 +23,10 @@ public class ClientService {
 	private ClientRepository repository;
 	
 	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll(){
-		List<Client> list = repository.findAll();
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest){
+		Page<Client> list = repository.findAll(pageRequest);
 		
-		List<ClientDTO> listDTO = new ArrayList<>();
-		for (Client cat : list) {
-			listDTO.add(new ClientDTO(cat));
-		}
-
-		return listDTO;
+		return list.map(x -> new ClientDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
@@ -66,4 +61,16 @@ public class ClientService {
 
 		}
 	}
+
+	public ClientDTO update(Long id, ClientDTO dto) {
+		try {
+			Client entity = repository.getOne(id);
+			entity = repository.save(entity);
+			return new ClientDTO(entity);
+		}
+		catch(ResourceNotFoundException e){
+			throw new ResourceNotFoundException("Id not found " + id);
+		}
+	}
+	
 }
